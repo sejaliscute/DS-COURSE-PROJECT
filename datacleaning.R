@@ -1,0 +1,15 @@
+
+f<- read.csv("train-data.csv")
+library(tidyverse)
+f %>% drop_na(Engine,Power,Mileage,Year,Kilometers_Driven)
+f$Engine<-gsub("CC"," ",as.character(f$Engine))
+f$Power<-gsub("bhp"," ",as.character(f$Power))
+f$Mileage<-gsub("kmpl"," ",as.character(f$Mileage))
+f$Mileage<-gsub("km/kg"," ",as.character(f$Mileage))
+view(f)
+na.omit(f)
+write.csv(f,"D:/Data Science Lab/course project/train-data.csv")
+f$Engine= as.numeric(f$Engine)
+f$Power= as.numeric(f$Power)
+f$Mileage= as.numeric(f$Mileage)
+
