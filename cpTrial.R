@@ -2,8 +2,6 @@ library(tidyverse)
 library(GGally)
 car<- read.csv("car-data.csv")
 glimpse(car)
-car<- car %>% mutate(Mileage = as.numeric(str_replace(Mileage," kmpl| km/kg","")),Engine = as.numeric(str_replace(Engine," CC","")),
-                     Power = as.numeric(str_replace(Power," bhp","")),Fuel_Type = as.factor(Fuel_Type),Owner_Type = as.factor(Owner_Type),Transmission = as.factor(Transmission))%>% select(-c(X,Name,New_Price,Location))
 str(car)
 car<- drop_na(car)
 car<-log(car$Power,car$Engine)
