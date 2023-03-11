@@ -7,8 +7,8 @@ car<- car %>% mutate(Mileage = as.numeric(str_replace(Mileage," kmpl| km/kg","")
 str(car)
 car<- drop_na(car)
 # car<-log(car$Power,car$Engine)
-# car
-RNGkind(sample.kind = "Rounding")
+car
+# RNGkind(sample.kind = "Rounding")
 set.seed(123)
 intrain <- sample(x=nrow(car), size = nrow(car)*0.8)
 car_train <- car[intrain,]
@@ -58,7 +58,7 @@ print(total)
 
 acc= (295/1175)*100
 print(acc)
-
+# 
 # eucd<-sqrt((car_test$Power-car_train$Power)**2+(car_test$Engine-car_train$Engine)**2)
 # data<-cbind(,eucd)
 # data<-data[order(data$eucd),]
