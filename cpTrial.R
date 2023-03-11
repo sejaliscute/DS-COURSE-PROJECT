@@ -1,6 +1,5 @@
 library(tidyverse)
 library(GGally)
-setwd("D:/Data Science Lab/course project")
 car<- read.csv("car-data.csv")
 glimpse(car)
 car<- car %>% mutate(Mileage = as.numeric(str_replace(Mileage," kmpl| km/kg","")),Engine = as.numeric(str_replace(Engine," CC","")),
