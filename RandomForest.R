@@ -5,8 +5,9 @@ library(caret)
 library(rpart)
 library(rpart.plot)
 library(randomForest)
+library(e1071)
 
-options(warn = -1)
+ 
 
 car<- read.csv("car-data.csv")
 #str(car)
@@ -22,20 +23,23 @@ car<- drop_na(car)
 q<-ggcorr(car, label = T)
 print(q)
 
+
+ggpairs(car, title="correlogram with ggpairs()")
+
 set.seed(123)
-car<-car[sample(nrow(car)),]
+car<-car[sample(nrow(car)),-c(3,5,9)]
 
 n2<- function(b){
   (b-min(b))/(max(b)-min(b))
 }
-carn<-car[,1:9]
+carn<-car[,1:6]
 carnor<-as.data.frame(lapply(carn,n2))
 
 
 train<-carnor[1:4697,]
 test<-carnor[4698:5872,]
-train_label<- car[1:4697,10]
-actual<-car[4698:5872,10]
+train_label<- car[1:4697,7]
+actual<-car[4698:5872,7]
 test_data<-car[4698:5872,]
 
 
@@ -75,7 +79,8 @@ rmse2<-RMSE(pred, actual)
 R22<-R2(pred, actual, form = "traditional")
 cat("\nRandom Forest")
 cat("\n MAE:", mae2, "\n", "MSE:", mse2, "\n", "RMSE:", rmse2, "\n", "R-squared:", R22)
-
+print(varImp(rf))
+varImpPlot(rf,sort=TRUE,main="Variable Importance Plot")
 final_data<- cbind(test_data,pred)
 view(final_data)
 
