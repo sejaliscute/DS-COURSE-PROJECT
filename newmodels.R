@@ -49,11 +49,6 @@ summary(model_xgboost)
 
 pred_y = predict(model_xgboost, xgb_test)
 
-
-mean((test_y - pred_y)^2) 
-caret::RMSE(test_y, pred_y) 
-y_test_mean = mean(test_y)
-
 mae1 <- MAE(pred_y, test_y)
 mse1<-RMSE(pred_y, test_y)^2
 rmse1<-RMSE(pred_y, test_y)
