@@ -3,6 +3,7 @@ library(tidyverse)
 library(caret)            
 library(GGally)
 library(class)
+library(gbm)
 car<- read.csv("car-data.csv")
 #str(car)
 car<- car %>% mutate(Mileage = as.numeric(str_replace(Mileage," kmpl| km/kg","")),Engine = as.numeric(str_replace(Engine," CC","")),Power = as.numeric(str_replace(Power," bhp","")),Fuel_Type = as.factor(Fuel_Type),Owner_Type = as.factor(Owner_Type),Transmission = as.factor(Transmission))%>% select(-c(X,Name,New_Price,Location))
@@ -57,3 +58,13 @@ r2<-R2(pred_y, test_y, form = "traditional")
 
 cat("\n Xgboost")
 cat("\n MAE:", mae1, "\n", "MSE:", mse1, "\n","RMSE:", rmse1, "\n", "R-squared:", r2)
+
+
+#####gbm model  
+
+model_gbm = gbm(train_y, data = train, distribution = "gaussian", cv.folds = 10, shrinkage = .01, n.minobsinnode = 10, n.trees = 500)
+
+print(model_gbm)
+
+summary(model_gbm)
+
