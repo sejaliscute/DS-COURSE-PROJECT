@@ -43,9 +43,9 @@ xgb_test = xgb.DMatrix(data = test_x, label = test_y)
 
 watchlist = list(train=xgb_train, test=xgb_test)
 
-model = xgb.train(data = xgb_train, max.depth = 3, watchlist=watchlist, nrounds = 100)
+model = xgb.train(data = xgb_train, max.depth = 3, watchlist=watchlist, nrounds = 500)
 
-model_xgboost = xgboost(data = xgb_train, max.depth = 3, nrounds = 86, verbose = 0)
+model_xgboost = xgboost(data = xgb_train, max.depth = 3, nrounds = 500, verbose = 0)
 
 summary(model_xgboost)
 
@@ -62,9 +62,9 @@ cat("\n MAE:", mae1, "\n", "MSE:", mse1, "\n","RMSE:", rmse1, "\n", "R-squared:"
 
 #####gbm model  
 
-model_gbm = gbm(train_y, data = train, distribution = "gaussian", cv.folds = 10, shrinkage = .01, n.minobsinnode = 10, n.trees = 500)
+#model_gbm = gbm(train_y, data = train, distribution = "gaussian", cv.folds = 10, shrinkage = .01, n.minobsinnode = 10, n.trees = 500)
 
-print(model_gbm)
+#print(model_gbm)
 
-summary(model_gbm)
+#summary(model_gbm)
 
