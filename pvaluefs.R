@@ -7,43 +7,42 @@ library(rpart.plot)
 library(randomForest)
 library(e1071)
 
- 
 
-car<- read.csv("car-data.csv")
+
+car1<- read.csv("car-data.csv")
 #str(car)
-car<- car %>% mutate(Mileage = as.numeric(str_replace(Mileage," kmpl| km/kg","")),Engine = as.numeric(str_replace(Engine," CC","")),Power = as.numeric(str_replace(Power," bhp","")),Fuel_Type = as.factor(Fuel_Type),Owner_Type = as.factor(Owner_Type),Transmission = as.factor(Transmission))%>% select(-c(X,Name,New_Price,Location))
-car$Year<-as.numeric(car$Year)
-car$Kilometers_Driven<-as.numeric(car$Kilometers_Driven)
-car$Fuel_Type<-as.numeric(car$Fuel_Type)
-car$Owner_Type<-as.numeric(car$Owner_Type)
-car$Transmission<-as.numeric(car$Transmission)
+car1<- car1 %>% mutate(Mileage = as.numeric(str_replace(Mileage," kmpl| km/kg","")),Engine = as.numeric(str_replace(Engine," CC","")),Power = as.numeric(str_replace(Power," bhp","")),Fuel_Type = as.factor(Fuel_Type),Owner_Type = as.factor(Owner_Type),Transmission = as.factor(Transmission))%>% select(-c(X,Name,New_Price,Location))
+car1$Year<-as.numeric(car1$Year)
+car1$Kilometers_Driven<-as.numeric(car1$Kilometers_Driven)
+car1$Fuel_Type<-as.numeric(car1$Fuel_Type)
+car1$Owner_Type<-as.numeric(car1$Owner_Type)
+car1$Transmission<-as.numeric(car1$Transmission)
 #str(car)
-car<- drop_na(car)
+car1<- drop_na(car1)
 
-q<-ggcorr(car, label = T)
-print(q)
+r<-ggcorr(car1, label = T)
+print(r)
 
 
-ggpairs(car, title="correlogram with ggpairs()")
+ggpairs(car1, title="correlogram with ggpairs()")
 
 set.seed(123)
-car<-car[sample(nrow(car)),]
+car1<-car1[sample(nrow(car1)),c(1,4,8,10)]
 
 n2<- function(b){
   (b-min(b))/(max(b)-min(b))
 }
-carn<-car[,1:9]
-carnor<-as.data.frame(lapply(carn,n2))
+carn1<-car1[,1:3]
+carnor1<-as.data.frame(lapply(carn1,n2))
 
-train<-carnor[1:4697,]
-test<-carnor[4698:5872,]
-train_label<- car[1:4697,10]
-tl<-cbind(carnor[1:4697,],car[1:4697,10])
-actual<-car[4698:5872,10]
-test_data<-car[4698:5872,]
+train<-carnor1[1:4697,]
+test<-carnor1[4698:5872,]
+train_label<- car1[1:4697,4]
+tl<-cbind(carnor1[1:4697,],car1[1:4697,4])
+actual<-car1[4698:5872,4]
+test_data<-car1[4698:5872,]
 
-
-mlr<-lm(Price~.,car)
+mlr<-lm(Price~.,car1)
 s1<-summary(mlr)
 print(s1)
 pred1<-predict(mlr,test_data)
@@ -79,8 +78,7 @@ rmse2<-RMSE(pred, actual)
 R22<-R2(pred, actual, form = "traditional")
 cat("\nRandom Forest")
 cat("\n MAE:", mae2, "\n", "MSE:", mse2, "\n", "RMSE:", rmse2, "\n", "R-squared:", R22)
-print(varImp(rf))
-varImpPlot(rf,sort=TRUE,main="Variable Importance Plot")
+
 final_data<- cbind(test_data,pred)
 view(final_data)
 
@@ -93,13 +91,3 @@ rmse3<-RMSE(pred3, actual)
 R23<-R2(pred3, actual, form = "traditional")
 cat("\nSupport Vector Regression")
 cat("\n MAE:", mae3, "\n", "MSE:", mse3, "\n", "RMSE:", rmse3, "\n", "R-squared:", R23)
-
-
-tune_range <- expand.grid(C = c(0.1, 1, 10),gamma = c(0.1, 1, 10),epsilon = c(0.1, 0.5, 1))
-svm_tune <- tune(svm,train_label~., data = train, kernel = "radial",
-                 ranges = tune_range, tunecontrol = tune.control(cross = 10))
-summary(svm_tune)
-
-
-
-
