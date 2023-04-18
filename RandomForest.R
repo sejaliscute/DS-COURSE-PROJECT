@@ -6,11 +6,12 @@ library(rpart)
 library(rpart.plot)
 library(randomForest)
 library(e1071)
-
+library(ggplot2)
+ 
  
 
 car<- read.csv("car-data.csv")
-#str(car)
+str(car)
 car<- car %>% mutate(Mileage = as.numeric(str_replace(Mileage," kmpl| km/kg","")),Engine = as.numeric(str_replace(Engine," CC","")),Power = as.numeric(str_replace(Power," bhp","")),Fuel_Type = as.factor(Fuel_Type),Owner_Type = as.factor(Owner_Type),Transmission = as.factor(Transmission))%>% select(-c(X,Name,New_Price,Location))
 car$Year<-as.numeric(car$Year)
 car$Kilometers_Driven<-as.numeric(car$Kilometers_Driven)
@@ -95,10 +96,35 @@ cat("\nSupport Vector Regression")
 cat("\n MAE:", mae3, "\n", "MSE:", mse3, "\n", "RMSE:", rmse3, "\n", "R-squared:", R23)
 
 
-tune_range <- expand.grid(C = c(0.1, 1, 10),gamma = c(0.1, 1, 10),epsilon = c(0.1, 0.5, 1))
-svm_tune <- tune(svm,train_label~., data = train, kernel = "radial",
-                 ranges = tune_range, tunecontrol = tune.control(cross = 10))
-summary(svm_tune)
+model_df <- data.frame(Model = c("Multiple Linear Regression", "Decision Tree", "Random Forest", "Support Vector Regression"),
+                       Accuracy = c(R2, r2, R22, R23))
+
+
+ggplot(model_df, aes(x = Model, y = Accuracy, fill = Model)) +
+  geom_col() +
+  labs(x = "Model", y = "Accuracy", title = "Model Accuracy Comparison") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+results <- data.frame(
+  Model = c("Multiple Linear Regression", "Decision Tree", "Random Forest", "Support Vector Regression"),
+  RMSE = c(rmse, rmse1, rmse2, rmse3),
+  MAE = c(mae, mae1, mae2, mae3),
+  R2 = c(R2, r2, R22, R23)
+)
+
+library(reshape2)
+results_melted <- melt(results, id.vars = "Model")
+
+graph<-ggplot(results_melted, aes(x = Model, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Model", y = "Value") +
+  scale_fill_manual(values = c("blue", "green", "red")) +
+  ggtitle("Comparison of Model Performance") +
+  theme_bw()
+print(graph)
+
+
 
 
 
