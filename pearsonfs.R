@@ -27,19 +27,19 @@ print(r)
 ggpairs(car1, title="correlogram with ggpairs()")
 
 set.seed(123)
-car1<-car1[sample(nrow(car1)),c(7,8,10)]
+car1<-car1[sample(nrow(car1)),c(4,7,8,10)]
 
 n2<- function(b){
   (b-min(b))/(max(b)-min(b))
 }
-carn1<-car1[,1:2]
+carn1<-car1[,1:3]
 carnor1<-as.data.frame(lapply(carn1,n2))
 
 train<-carnor1[1:4697,]
 test<-carnor1[4698:5872,]
-train_label<- car1[1:4697,3]
-tl<-cbind(carnor1[1:4697,],car1[1:4697,3])
-actual<-car1[4698:5872,3]
+train_label<- car1[1:4697,4]
+tl<-cbind(carnor1[1:4697,],car1[1:4697,4])
+actual<-car1[4698:5872,4]
 test_data<-car1[4698:5872,]
 
 mlr<-lm(Price~.,car1)

@@ -1,5 +1,5 @@
 library(caret)
-
+library(randomForest)
 # Load data
 car1 <- read.csv("car-data.csv")
 car1 <- car1 %>% 
@@ -31,7 +31,7 @@ set.seed(123)
 rf_fit <- rfe(training[, -1], training$Price, sizes = c(1:7), rfeControl = ctrl)
 
 # Print the feature ranking
-print(rf_fit$optVariables)
+print(rf_fit)
 
 # Use the selected features to train a final random forest model
 final_rf <- randomForest(Price ~ ., data = training[, c("Price", rf_fit$optVariables)], importance = TRUE, ntree = 500)
@@ -40,7 +40,11 @@ final_rf <- randomForest(Price ~ ., data = training[, c("Price", rf_fit$optVaria
 predictions <- predict(final_rf, testing[, c("Price", rf_fit$optVariables)])
 rmse <- RMSE(predictions, testing$Price)
 rsq <- R2(predictions, testing$Price)
+mae<-MAE(predictions, testing$Price)
+mse<-RMSE(predictions, testing$Price)^2
 
 # Print evaluation metrics
 cat("RMSE: ", rmse, "\n")
 cat("R-squared: ", rsq, "\n")
+cat("MAE: ", mae, "\n")
+cat("MSE: ", mse, "\n")

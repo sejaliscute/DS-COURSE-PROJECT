@@ -27,7 +27,7 @@ print(q)
 
 ggpairs(car, title="correlogram with ggpairs()")
 
-set.seed(123)
+
 car<-car[sample(nrow(car)),]
 
 n2<- function(b){
@@ -100,12 +100,12 @@ model_df <- data.frame(Model = c("Multiple Linear Regression", "Decision Tree", 
                        Accuracy = c(R2, r2, R22, R23))
 
 
-ggplot(model_df, aes(x = Model, y = Accuracy, fill = Model)) +
+graph1<-ggplot(model_df, aes(x = Model, y = Accuracy, fill = Model)) +
   geom_col() +
   labs(x = "Model", y = "Accuracy", title = "Model Accuracy Comparison") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
+print(graph1)
 results <- data.frame(
   Model = c("Multiple Linear Regression", "Decision Tree", "Random Forest", "Support Vector Regression"),
   RMSE = c(rmse, rmse1, rmse2, rmse3),
