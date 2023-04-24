@@ -5,7 +5,17 @@ library(GGally)
 library(class)
 car<- read.csv("car-data.csv")
 #str(car)
-car<- car %>% mutate(Mileage = as.numeric(str_replace(Mileage," kmpl| km/kg","")),Engine = as.numeric(str_replace(Engine," CC","")),Power = as.numeric(str_replace(Power," bhp","")),Fuel_Type = as.factor(Fuel_Type),Owner_Type = as.factor(Owner_Type),Transmission = as.factor(Transmission))%>% select(-c(X,Name,New_Price,Location))
+#car<- car %>% mutate(Mileage = as.numeric(str_replace(Mileage," kmpl| km/kg","")),Engine = as.numeric(str_replace(Engine," CC","")),Power = as.numeric(str_replace(Power," bhp","")),Fuel_Type = as.factor(Fuel_Type),Owner_Type = as.factor(Owner_Type),Transmission = as.factor(Transmission))%>% select(-c(X,Name,New_Price,Location))
+car$Mileage <- as.numeric(str_replace(car$Mileage, " kmpl| km/kg", ""))
+car$Engine <- as.numeric(str_replace(car$Engine, " CC", ""))
+car$Power <- str_replace(car$Power, " bhp", "")
+car$Power <- as.integer(car$Power)
+car$Fuel_Type <- as.factor(car$Fuel_Type)
+car$Owner_Type <- as.factor(car$Owner_Type)
+car$Transmission <- as.factor(car$Transmission)
+car <- car[, !names(car) %in% c("X", "Name", "New_Price", "Location")]
+
+
 car$Year<-as.numeric(car$Year)
 car$Kilometers_Driven<-as.numeric(car$Kilometers_Driven)
 car$Fuel_Type<-as.numeric(car$Fuel_Type)
@@ -44,11 +54,9 @@ watchlist = list(train=xgb_train, test=xgb_test)
 
 model = xgb.train(data = xgb_train, max.depth = 3, watchlist=watchlist, nrounds = 500)
 
-model_xgboost = xgboost(data = xgb_train, max.depth = 3, nrounds = 500, verbose = 0)
+summary(model)
 
-summary(model_xgboost)
-
-pred_y = predict(model_xgboost, xgb_test)
+pred_y = predict(model, xgb_test)
 
 mae1 <- MAE(pred_y, test_y)
 mse1<-RMSE(pred_y, test_y)^2
